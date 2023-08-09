@@ -1,0 +1,142 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo-List</title>
+    <link rel="stylesheet" href="demo.css">
+</head>
+
+<body>
+    <div id="main">
+        <div id="todo-list">
+            <h1>Welcome to my Todo-list Web-Application</h1>
+            <div id="input-ele">
+                <label id="lbl">Enter Your Task :-</label>
+                <input type="text" name="txt" id="txt">
+                <input type="submit" value="Add" onclick="todo()" id="btn">
+            </div>
+        </div>
+
+        <div id="task_list">
+            <ul id="tasks">
+
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+
+
+        //var tasktext;
+        // we create a local storage
+        GanarateLocalStorage = (tasktext, btnType) => {
+            if (btnType == "btnAdd") {
+                if (localStorage.getItem("todolist") != null) {
+                    let localStorageValue = localStorage.getItem("todolist");
+                    // below line use to store multiple values after "|" .
+                    localStorageValue += "|" + tasktext;
+                    localStorage.setItem("todolist", localStorageValue);
+                }
+
+                else {
+                    localStorage.setItem("todolist", tasktext);
+                }
+            }
+
+            else if (btnType == "updatebtn") {
+                let localStorageval = ""; // this is for store multiple value .
+                let litag = tasks.children;
+                for (let i = 0; i < litag.length; i++) {
+                    // remove unneccessary space and store the updated value in localStorage.
+                    let litagchild = litag[i].childNodes[0].innerHTML.trim();
+                    localStorageval = litagchild + "|";
+                }
+                localStorageval = localStorageval.substring(0, localStorageval.length - 1);
+                localStorageval = localStorage.setItem("todolist", localStorageval)
+
+            }
+        }
+        // now create the li tag for the task .
+
+        filltodolist = (tasktext) => {
+            let litag = document.createElement("li");
+            litag.id = "litag" + count;
+
+            let div = document.createElement("div");
+            div.className = "task";
+            div.id = "div" + count;
+
+            let lbl = document.createElement("label");
+            lbl.id = "lbl" + count;
+            lbl.innerHTML = tasktext;
+            div.appendChild(lbl);
+
+            let edittxt = document.createElement("input");
+            edittxt.type = "text";
+            edittxt.id = "edittxt" + count;
+            edittxt.value = tasktext;
+            div.appendChild(edittxt);
+
+            let editbtn = document.createElement("input");
+            editbtn.type = "submit";
+            editbtn.value = "Edit"
+            editbtn.id = "editbtn" + count;
+            editbtn.setAttribute("data-id", count)
+
+            // data edit 
+
+            editbtn.onclick = function () {
+                let globid = this.getAttribute("data-id");
+
+                if (this.value == "Edit") {
+                    this.value = "Update"
+                    console.log(this.value);
+                    document.getElementById("lbl" + globid).style.display = "none";
+                    document.getElementById("edittxt" + globid).style.display = "block";
+                    console.log(globid)
+                }
+                else {
+                    document.getElementById("lbl" + globid).innerHTML = document.getElementById("edittxt" + globid).value
+                    this.value = "Edit"
+                    document.getElementById("lbl" + globid).style.display = "block";
+                    document.getElementById("edittxt" + globid).style.display = "none";
+
+                    // now set the things in localStorage . 
+
+                    GanarateLocalStorage(document.getElementById("edittxt" + globid).value, "updatebtn")
+                }
+            };
+            div.appendChild(editbtn)
+
+            // Add the task in div
+            litag.append(div)
+
+            // Add the li in ul . 
+            tasks.appendChild(litag)
+            count++;
+        }
+        // task_list div and tasks is your ul
+
+        // --------------------- Check the input tage is empty or not. --------------------------------
+        var count = 1;
+        function todo() {
+            if (txt.value != "") {
+                //debugger;
+                (txt.value);
+                GanarateLocalStorage(txt.value, "btnAdd");
+            }
+        }
+        window.onload = function () {
+            if (localStorage.getItem("todolist") != null) {
+                let value = localStorage.getItem("todolist").toString().split("|");
+                for (let i = 0; i < value.length; i++) {
+                    filltodolist(value[i]);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
